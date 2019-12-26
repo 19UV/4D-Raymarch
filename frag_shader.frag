@@ -1,16 +1,21 @@
 uniform vec4 u_cam_pos;
+uniform vec2 u_direction;
 
 uniform vec2 u_resolution;
 uniform float u_time;
 uniform vec2 u_mouse;
 
-const int MAX_MARCHING_STEPS = 500;
+uniform float SHADOWS;
+
+const int MAX_MARCHING_STEPS = 400;
 const float MIN_DIST = 0.0;
-const float MAX_DIST = 100.0;
+const float MAX_DIST = 75.0;
 const float EPSILON = 0.0001;
 
 vec3 fog_color = vec3(0.25);
 float cam_w = 0.0;
+
+
 
 vec4 sdPlane(in vec4 p, in vec4 pos, in vec3 color)
 {
@@ -37,8 +42,11 @@ vec4 sceneSDF(in vec4 p)
 {
     vec4 world_matrix[WORLDLENGTH];
     
-    world_matrix[0] = sdSphere(p, vec4(0.0, 2.5, 0.0, 0.0), 2.0, vec3(0.0, 0.0, 1.0));
+    // world_matrix[0] = sdSphere(p, vec4(0.0, 2.5, 0.0, 0.0), 2.0, vec3(0.0, 0.0, 1.0));
+    
+    world_matrix[0] = sdBox(p, vec4(0.0, 2.5, 0.0, 0.0), vec4(2.0), vec3(0.98, 0.78, 0.05));
     world_matrix[1] = sdSphere(p, vec4(0.0, -2.5, 0.0, 0.75), 1.0, vec3(0.0, 1.0, 0.0));
+    
     world_matrix[2] = sdPlane(p, vec4(0.0, 0.0, -2.5, 0.0), vec3(0.85));
     
     vec4 closest_obj = vec4(100.0);
@@ -112,8 +120,11 @@ void main() {
     vec3 cam_pos = vec3(u_cam_pos.xyz);
     cam_w = u_cam_pos.w;
     
-    float ztheta = u_mouse.x/u_resolution.x;
-    float xtheta = u_mouse.y/u_resolution.y;
+    // float ztheta = u_mouse.x/u_resolution.x;
+    // float xtheta = u_mouse.y/u_resolution.y;
+    
+    float ztheta = u_direction[0];
+    float xtheta = u_direction[1];
     
     float sin_ztheta = sin(ztheta);
     float cos_ztheta = cos(ztheta);
@@ -139,5 +150,11 @@ void main() {
     vec4 trace_return = trace(cam_pos, dir, MIN_DIST, MAX_DIST);
     vec3 collision_pos = cam_pos + trace_return.w * dir;
     
-    gl_FragColor = vec4(trace_return.xyz * total_intensity(collision_pos), 0.0);
+    if (SHADOWS == 1.0) {
+        gl_FragColor = vec4(trace_return.xyz * total_intensity(collision_pos), 0.0);
+        return;
+    } else {
+        gl_FragColor = vec4(trace_return.xyz, 0.0);
+        return;
+    }
 }

@@ -21,3 +21,11 @@ function createStats() {
     
     return stats;
 }
+
+function ray(origin, direction, distance) { // 3D
+    var return_value = origin;
+    return_value[0] += Math.sin(direction[0]) * (Math.cos(direction[1]) * distance);
+    return_value[1] += Math.cos(direction[0]) * (Math.cos(direction[1]) * distance);
+    return_value[2] += Math.sin(direction[1]) * distance;
+    return return_value;
+}
