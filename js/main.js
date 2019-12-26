@@ -203,6 +203,8 @@ function render() {
     vec3_cam_pos = ray(vec3_cam_pos, [player_dir[0] - PI2, 0.0], player_vel[0]) // Forward
     vec3_cam_pos = ray(vec3_cam_pos, [player_dir[0], 0.0], player_vel[1] / 2.0) // Right
     
+    cam_w += player_vel[2] / 45;
+    
     set_player_pos([vec3_cam_pos[0], vec3_cam_pos[1], vec3_cam_pos[2], cam_w]); // May not be the best place to place
     
     renderer.render( scene, camera );
