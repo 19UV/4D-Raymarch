@@ -9,3 +9,5 @@
 - Add Fractal Implimentation
 - Make Different Material Types (Diffuse, Reflective, etc)
 - Make Scene Creator App (After Scene Loading), Longterm
+
+Note: Because of speed limitations, I remade this project at github.com/19UV/Tesseract-Example
